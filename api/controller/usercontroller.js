@@ -50,34 +50,41 @@ const createUser = async (req, res) => {
   }
 };
 
-const userLogin = async (req, res) => {
+const loginUser = async (req, res) => {
   try {
-    if (!req.body.email || !req.body.password) {
+    const { email, password } = req.body;
+
+    // Validasi input
+    if (!email || !password) {
       return res.status(400).json({
         status: "Gagal",
-        message: "Login gagal ",
-        errors: "Email dan Password wajib diisi",
+        message: "Email dan password wajib diisi",
       });
     }
 
-    const userLogin = await user.findOne({ where: { email: req.body.email } });
-    if (!userLogin || !(await userLogin.findPassword(req.body.password))) {
-      return res.status(400).json({
+    // Cari user berdasarkan email
+    const userLogin = await user.findOne({ where: { email } });
+
+    // Periksa apakah user ditemukan dan password valid
+    if (!userLogin || !(await userLogin.findPassword(password))) {
+      return res.status(401).json({
         status: "Gagal",
         message: "Login gagal",
-        errors:
-          "Email atau password tidak ada silahkan melakukan login kembali",
+        errors: "Email atau password salah, silakan coba lagi",
       });
     }
 
+    // Generate token
     const token = signToken(userLogin.id);
 
+    // Berhasil login
     return res.status(200).json({
       status: "Sukses",
       message: "Berhasil login",
       token,
     });
   } catch (error) {
+    // Tangani error server
     return res.status(500).json({
       status: "Error",
       message: "Terjadi kesalahan server",
@@ -88,5 +95,5 @@ const userLogin = async (req, res) => {
 
 module.exports = {
   createUser,
-  userLogin,
+  loginUser,
 };
