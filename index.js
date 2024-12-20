@@ -28,9 +28,9 @@ app.use("/api/product", productRoutes);
 app.use("/api/produk_details", produkDetailsRoutes);
 app.use("/api/kritik_saran", kritikSaranRoutes);
 
-// Authentication middleware (ensure this is applied to the appropriate routes)
-app.use(authenticateUser);
-app.use(authenticateAdmin);
+// // Authentication middleware (ensure this is applied to the appropriate routes)
+// app.use(authenticateUser);
+// app.use(authenticateAdmin);
 
 // Root route
 app.get("/", (req, res) => {
